@@ -4,6 +4,8 @@ import { MonthlyData, ProfitabilityData } from '../data/mockData';
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1092502501&single=true&output=csv';
 const PROFITABILITY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1722593857&single=true&output=csv';
+const ANBANG_ANALYSIS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1yzgH_-850mdBkptH_oj6KYUUsaW6NVHkTPf5pO8zqXE/export?format=csv&gid=863618794';
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzIZDcdDiPTfuGCRSw5sIp-Dyg6Zz2pF-njf3DUhyes84Ydrki4P6niYNiz6F_q4_wA/exec';
 
 
 const parseCSV = (csvString: string): any[][] => {
@@ -214,11 +216,16 @@ export const googleSheetsService = {
         };
       });
 
-      // '앉방데이분석' 시트에서 해당 년월의 메모 불러오기
+      // '앉방데이분석' 시트에서 해당 년월의 메모 직접 불러오기
       let savedReason = '';
       try {
-        const memoRes = await axios.get(`/api/memo?year=${year}&month=${month}`);
-        savedReason = memoRes.data.memo || '';
+        const memoRes = await axios.get(ANBANG_ANALYSIS_CSV_URL);
+        const memoRows = parseCSV(memoRes.data);
+        const matchRow = memoRows.find((r: any[]) => {
+          const digits = r[0]?.toString().replace(/[^0-9]/g, '') || '';
+          return digits === `${year}${month}` || digits === `${year}${String(month).padStart(2, '0')}`;
+        });
+        savedReason = matchRow ? (matchRow[1] || '') : '';
       } catch (e) {
         console.warn('Failed to fetch memo from 앉방데이분석 sheet');
       }
@@ -236,7 +243,9 @@ export const googleSheetsService = {
 
   async saveReason(year: number, month: number, text: string): Promise<void> {
     try {
-      await axios.post('/api/memo', { year, month, reason: text });
+      await axios.post(GAS_WEBAPP_URL, JSON.stringify({ action: 'saveMemo', year, month, reason: text }), {
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+      });
       console.log('Successfully saved reason to Google Sheets');
     } catch (error) {
       console.error('Failed to save reason to Google Sheets', error);
