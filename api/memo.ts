@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwJj4oic0LX5oYFPYKiPfVVjzX3_EymztcAgCcWlinynPqjycSTtgRndJ4369sdb6PPbg/exec';
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbylkNakbBNXl5w0WPrmYp0VeuLnzIIwVjJUx0_x13jwUGDIFV3lshFLfidu4GRmFohbqQ/exec';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
