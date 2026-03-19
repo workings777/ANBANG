@@ -219,7 +219,7 @@ export const googleSheetsService = {
       // '앉방데이분석' 시트에서 해당 년월의 메모 직접 불러오기
       let savedReason = '';
       try {
-        const memoRes = await axios.get(ANBANG_ANALYSIS_CSV_URL);
+        const memoRes = await axios.get(`${ANBANG_ANALYSIS_CSV_URL}&t=${Date.now()}`);
         const memoRows = parseCSV(memoRes.data);
         const matchRow = memoRows.find((r: any[]) => {
           const digits = r[0]?.toString().replace(/[^0-9]/g, '') || '';
