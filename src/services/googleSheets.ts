@@ -4,7 +4,7 @@ import { MonthlyData, ProfitabilityData } from '../data/mockData';
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1092502501&single=true&output=csv';
 const PROFITABILITY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1722593857&single=true&output=csv';
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyvb-wpFaEcBpBTdqomfw8vbFySbAnjJQyg_weTBziszuHi8Ac3uPfeEZzTsbnavLLr/exec';
+
 
 const parseCSV = (csvString: string): any[][] => {
   const result = Papa.parse(csvString, {
@@ -214,10 +214,14 @@ export const googleSheetsService = {
         };
       });
 
-      // Row Index = 5 + ((year - 2024) * 12) + month
-      // Array Index = Row Index - 1
-      const rowIndex = 4 + ((year - 2024) * 12) + month;
-      const savedReason = mainRows[rowIndex] && mainRows[rowIndex][9] ? mainRows[rowIndex][9].toString() : '';
+      // '앉방데이분석' 시트에서 해당 년월의 메모 불러오기
+      let savedReason = '';
+      try {
+        const memoRes = await axios.get(`/api/memo?year=${year}&month=${month}`);
+        savedReason = memoRes.data.memo || '';
+      } catch (e) {
+        console.warn('Failed to fetch memo from 앉방데이분석 sheet');
+      }
 
       return { targetVsActual, yoy, savedReason };
     } catch (error) {
@@ -232,16 +236,7 @@ export const googleSheetsService = {
 
   async saveReason(year: number, month: number, text: string): Promise<void> {
     try {
-      // Use text/plain to avoid CORS preflight issues with GAS
-      await axios.post(GAS_WEBAPP_URL, JSON.stringify({
-        year,
-        month,
-        reason: text
-      }), {
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        }
-      });
+      await axios.post('/api/memo', { year, month, reason: text });
       console.log('Successfully saved reason to Google Sheets');
     } catch (error) {
       console.error('Failed to save reason to Google Sheets', error);
