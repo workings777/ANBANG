@@ -4,7 +4,7 @@ import { MonthlyData, ProfitabilityData } from '../data/mockData';
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1092502501&single=true&output=csv';
 const PROFITABILITY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1722593857&single=true&output=csv';
-const ANBANG_ANALYSIS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1yzgH_-850mdBkptH_oj6KYUUsaW6NVHkTPf5pO8zqXE/export?format=csv&gid=863618794';
+const ANBANG_ANALYSIS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=863618794&single=true&output=csv';
 const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzIZDcdDiPTfuGCRSw5sIp-Dyg6Zz2pF-njf3DUhyes84Ydrki4P6niYNiz6F_q4_wA/exec';
 
 
