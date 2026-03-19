@@ -173,9 +173,7 @@ export const ProfitabilityMemo: React.FC<ProfitabilityMemoProps> = ({ year, mont
               ))}
             </div>
           ) : (
-            <div className="text-gray-400 text-base italic flex h-full items-center justify-center text-center">
-              등록된 변동 사유가 없습니다.<br/>우측 상단의 수정 버튼을 눌러 추가해보세요.
-            </div>
+            <div />
           )
         ) : (
           <div className="space-y-4">
