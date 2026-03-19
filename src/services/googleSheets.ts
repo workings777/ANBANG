@@ -5,7 +5,7 @@ import { MonthlyData, ProfitabilityData } from '../data/mockData';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1092502501&single=true&output=csv';
 const PROFITABILITY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1722593857&single=true&output=csv';
 const ANBANG_ANALYSIS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSWffDXRNPP-82jsG1CrEOqySnz3-Qsoh36n3B_DhPTu7dSVzBziXCdfUC4IAEM06HXq33OYJM6Zabo/pub?gid=0&single=true&output=csv';
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwJj4oic0LX5oYFPYKiPfVVjzX3_EymztcAgCcWlinynPqjycSTtgRndJ4369sdb6PPbg/exec';
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbylkNakbBNXl5w0WPrmYp0VeuLnzIIwVjJUx0_x13jwUGDIFV3lshFLfidu4GRmFohbqQ/exec';
 
 
 const parseCSV = (csvString: string): any[][] => {
