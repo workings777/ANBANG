@@ -5,7 +5,7 @@ import { MonthlyData, ProfitabilityData } from '../data/mockData';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1092502501&single=true&output=csv';
 const PROFITABILITY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1722593857&single=true&output=csv';
 const ANBANG_ANALYSIS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSWffDXRNPP-82jsG1CrEOqySnz3-Qsoh36n3B_DhPTu7dSVzBziXCdfUC4IAEM06HXq33OYJM6Zabo/pub?gid=0&single=true&output=csv';
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzIZDcdDiPTfuGCRSw5sIp-Dyg6Zz2pF-njf3DUhyes84Ydrki4P6niYNiz6F_q4_wA/exec';
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwJj4oic0LX5oYFPYKiPfVVjzX3_EymztcAgCcWlinynPqjycSTtgRndJ4369sdb6PPbg/exec';
 
 
 const parseCSV = (csvString: string): any[][] => {
@@ -242,12 +242,11 @@ export const googleSheetsService = {
   },
 
   async saveReason(year: number, month: number, text: string): Promise<void> {
-    try {
-      await axios.post('/api/memo', { year, month, reason: text });
-      console.log('Successfully saved reason to Google Sheets');
-    } catch (error) {
-      console.error('Failed to save reason to Google Sheets', error);
-      throw error;
-    }
+    await fetch(GAS_WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'saveMemo', year, month, reason: text })
+    });
   }
 };
