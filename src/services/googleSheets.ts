@@ -243,9 +243,7 @@ export const googleSheetsService = {
 
   async saveReason(year: number, month: number, text: string): Promise<void> {
     try {
-      await axios.post(GAS_WEBAPP_URL, JSON.stringify({ action: 'saveMemo', year, month, reason: text }), {
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-      });
+      await axios.post('/api/memo', { year, month, reason: text });
       console.log('Successfully saved reason to Google Sheets');
     } catch (error) {
       console.error('Failed to save reason to Google Sheets', error);
