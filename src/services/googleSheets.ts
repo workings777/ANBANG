@@ -242,11 +242,12 @@ export const googleSheetsService = {
   },
 
   async saveReason(year: number, month: number, text: string): Promise<void> {
+    const row = (year - 2024) * 12 + month + 1; // row 1 = header, row 2 = 202401
     await fetch(GAS_WEBAPP_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'saveMemo', year, month, reason: text })
+      body: JSON.stringify({ action: 'saveMemo', row, reason: text })
     });
   }
 };
