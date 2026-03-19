@@ -24,9 +24,12 @@ async function startServer() {
   
   // Public CSV URL provided by user
   const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1092502501&single=true&output=csv';
-  
+
   // URL for the '목표비, 전년비' sheet
   const PROFITABILITY_CSV_URL = process.env.PROFITABILITY_CSV_URL || 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaFKe2m2x6HyEePar5T_yE4xTAzJ5QFs2pveVPM0SJXiKr0QrJoEYiaCAJ4L3-HROBj51_kAwlUXq6/pub?gid=1722593857&single=true&output=csv';
+
+  // '앉방데이분석' 시트 URL (앉방데이 스프레드시트)
+  const ANBANG_ANALYSIS_CSV_URL = 'https://docs.google.com/spreadsheets/d/1yzgH_-850mdBkptH_oj6KYUUsaW6NVHkTPf5pO8zqXE/export?format=csv&gid=863618794';
 
   // API: Get Google OAuth URL (Kept for backward compatibility or future use)
   app.get('/api/auth/google/url', (req, res) => {
@@ -337,6 +340,53 @@ async function startServer() {
     } catch (error: any) {
       console.error('Profitability CSV Fetch error:', error.message);
       res.status(500).json({ error: 'Failed to fetch profitability data' });
+    }
+  });
+
+  const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzIZDcdDiPTfuGCRSw5sIp-Dyg6Zz2pF-njf3DUhyes84Ydrki4P6niYNiz6F_q4_wA/exec';
+
+  // API: Save memo via GAS (proxy to avoid CORS)
+  app.post('/api/memo', async (req, res) => {
+    const { year, month, reason } = req.body;
+    try {
+      await axios.post(GAS_WEBAPP_URL, JSON.stringify({ action: 'saveMemo', year, month, reason }), {
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+      });
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error('GAS save error:', error.message);
+      res.status(500).json({ error: 'Failed to save memo' });
+    }
+  });
+
+  // API: Fetch memo from '앉방데이분석' sheet (A: year-month, B: content)
+  app.get('/api/memo', async (req, res) => {
+    const { year, month } = req.query;
+    if (!year || !month) {
+      return res.status(400).json({ error: 'year and month required' });
+    }
+
+    const y = parseInt(year as string);
+    const m = parseInt(month as string);
+
+    try {
+      const response = await axios.get(ANBANG_ANALYSIS_CSV_URL);
+      const rows = parse(response.data, { columns: false, skip_empty_lines: true });
+
+      const matchRow = rows.find((r: any[]) => {
+        const cell = r[0]?.toString() || '';
+        const digits = cell.replace(/[^0-9]/g, '');
+        return (
+          digits === `${y}${String(m).padStart(2, '0')}` ||
+          digits === `${String(y).slice(-2)}${String(m).padStart(2, '0')}` ||
+          digits === `${y}${m}`
+        );
+      });
+
+      res.json({ memo: matchRow ? (matchRow[1] || '') : '' });
+    } catch (error: any) {
+      console.error('Memo fetch error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch memo' });
     }
   });
 
