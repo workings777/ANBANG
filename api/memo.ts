@@ -1,8 +1,9 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzIZDcdDiPTfuGCRSw5sIp-Dyg6Zz2pF-njf3DUhyes84Ydrki4P6niYNiz6F_q4_wA/exec';
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwJj4oic0LX5oYFPYKiPfVVjzX3_EymztcAgCcWlinynPqjycSTtgRndJ4369sdb6PPbg/exec';
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
