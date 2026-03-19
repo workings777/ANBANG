@@ -18,7 +18,7 @@ interface ProfitabilityMemoProps {
   onSaveSuccess?: () => void;
 }
 
-export const ProfitabilityMemo: React.FC<ProfitabilityMemoProps> = ({ year, month, data, onSaveSuccess }) => {
+export const ProfitabilityMemo: React.FC<ProfitabilityMemoProps> = ({ year, month, data }) => {
   const [memos, setMemos] = useState<MemoItem[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editMemos, setEditMemos] = useState<MemoItem[]>([]);
@@ -58,10 +58,9 @@ export const ProfitabilityMemo: React.FC<ProfitabilityMemoProps> = ({ year, mont
     setMemos(cleanedMemos);
     setIsEditing(false);
 
-    // Save to Google Sheets via server (best-effort)
+    // Save to Google Sheets (best-effort, no immediate refetch to avoid cache issue)
     try {
       await googleSheetsService.saveReason(year, month, JSON.stringify(cleanedMemos));
-      if (onSaveSuccess) onSaveSuccess();
     } catch (error) {
       console.error('Failed to save to Google Sheets', error);
     } finally {
